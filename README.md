@@ -2,11 +2,28 @@
 
 Implementations of machine learning algorithms using **NumPy**, built to understand how they work internally rather than relying entirely on existing ML libraries.
 
+## How to Run
+
+Use Python 3.12 or later. Install the pinned dependencies and run an example from the repository root:
+
+```bash
+python -m pip install -r requirements.txt
+python -m examples.knn_example
+python -m examples.logistic_regression_example
+```
+
+Run the assertion-based checks (separate from the output-only demos) with:
+
+```bash
+python -m examples.check_knn
+python -m examples.check_logistic_regression
+```
+
 ## Algorithms
 
 ### 1. K-Nearest Neighbors (KNN)
 
-**Type:** Classification and Regression
+**Type:** Classification
 
 KNN is a *lazy learning* algorithm. Unlike models that learn parameters during training, KNN stores the training dataset and delays most computation until prediction time.
 
@@ -14,22 +31,21 @@ KNN is a *lazy learning* algorithm. Unlike models that learn parameters during t
 
 1. Store the training features and their labels.
 2. Calculate the distance between a new data point and the training points, commonly using Euclidean distance.
-3. Select the \(k\) nearest neighbors.
-4. **Classification:** Predict the most frequent class among the neighbors.
-5. **Regression:** Predict the average target value of the neighbors.
+3. Select the $k$ nearest neighbors.
+4. Predict the most frequent class among the neighbors.
 
 **Key concepts:**
 - Euclidean distance
 - Nearest-neighbor search
 - Majority voting
-- Feature standardization
-- Choosing the value of \(k\)
+- External feature scaling
+- Choosing the value of $k$
 
 **Implementation details**
 
 - **Implementation:** NumPy
 - **Dataset:** Iris
-- **Evaluation:** Achieved **100% accuracy** with \(k = 5\), matching scikit-learn's KNN implementation on the same train/test split.
+- **Evaluation:** Achieved **100% accuracy** with $k = 5$, matching scikit-learn's KNN implementation on the same train/test split.
 
 ### 2. Logistic Regression
 
@@ -78,7 +94,24 @@ An **epoch** represents one complete pass through the training dataset. In this 
 
 - **Implementation:** NumPy
 - **Dataset:** Breast Cancer Wisconsin dataset from scikit-learn
-- **Preprocessing:** Feature standardization using training-set statistics
-- **Evaluation:** Achieved **98.25% accuracy**, compared with **99.12%** for scikit-learn's Logistic Regression implementation using the same train/test split.
+- **Preprocessing:** Feature standardization is performed outside the model using training-set statistics, and the same transformation is applied to prediction data.
+- **API:** Configure `lr`, `epochs`, `eps`, and `patience` when creating the model; `fit(X, y)` learns the parameters, and `predict_proba(X)` returns positive-class probabilities.
+- **Evaluation:** The example compares accuracy with scikit-learn's unregularized Logistic Regression on the same standardized train/test split.
 
-**Note**: For detailled math formulas check `math.md`
+**Note**: For detailed math formulas, check `math.md`.
+
+## Results
+
+Each example uses an 80/20 train/test split with `random_state=93`. Features are standardized using training-set statistics before fitting and prediction.
+
+| Model | Dataset | Metric | From scratch | scikit-learn | Prediction agreement |
+|---|---|---|---:|---:|---:|
+| KNN ($k=5$) | Iris | Accuracy | 100.00% | 100.00% | 100.00% |
+| Logistic Regression | Breast Cancer Wisconsin | Accuracy | 96.49% | 96.49% | 98.25% |
+
+## What I Learned
+
+- Implementing algorithms directly makes the relationship between model assumptions, loss functions, gradients, and predictions explicit.
+- Preprocessing must be learned from the training set and reused on test data to avoid data leakage.
+- Comparing predictions with scikit-learn and checking gradients numerically are practical ways to validate an implementation.
+- Shared classifier behavior, such as accuracy scoring, belongs in a reusable mixin rather than being duplicated.
