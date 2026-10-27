@@ -108,10 +108,3 @@ Each example uses an 80/20 train/test split with `random_state=93`. Features are
 |---|---|---|---:|---:|---:|
 | KNN ($k=5$) | Iris | Accuracy | 100.00% | 100.00% | 100.00% |
 | Logistic Regression | Breast Cancer Wisconsin | Accuracy | 96.49% | 96.49% | 98.25% |
-
-## What I Learned
-
-- Implementing algorithms directly makes the relationship between model assumptions, loss functions, gradients, and predictions explicit.
-- Preprocessing must be learned from the training set and reused on test data to avoid data leakage.
-- Comparing predictions with scikit-learn and checking gradients numerically are practical ways to validate an implementation.
-- Shared classifier behavior, such as accuracy scoring, belongs in a reusable mixin rather than being duplicated.
